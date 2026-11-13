@@ -226,10 +226,19 @@ namespace SIMS.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("FacultyName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("FacultyId");
 
@@ -240,7 +249,9 @@ namespace SIMS.Migrations
                         {
                             FacultyId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Department = "Department of Software Engineering & Architecture",
-                            FacultyName = "Dr. Michael Vance"
+                            Email = "vancem@fpt.edu.vn",
+                            FacultyName = "Dr. Michael Vance",
+                            PasswordHash = "$2a$11$ABCDEFGHIJKLMNOPQRSTUOF8KfyBfX4omEVVVTzh8y1AdC6BtobkC"
                         });
                 });
 
@@ -379,6 +390,10 @@ namespace SIMS.Migrations
                     b.Property<double>("Gpa")
                         .HasColumnType("float");
 
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Program")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -406,9 +421,47 @@ namespace SIMS.Migrations
                             EnrollmentDate = new DateTime(2023, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Tran Vu Duc",
                             Gpa = 3.8199999999999998,
+                            PasswordHash = "$2a$11$ABCDEFGHIJKLMNOPQRSTUOF8KfyBfX4omEVVVTzh8y1AdC6BtobkC",
                             Program = "Software Engineering",
                             Status = "Active",
                             StudentCode = "BH02383"
+                        });
+                });
+
+            modelBuilder.Entity("SIMS.Models.Entities.SystemAdmin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("SystemAdmins");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
+                            Email = "adminduc000@gmail.com",
+                            FullName = "Duc Tran (System Admin)",
+                            PasswordHash = "$2a$11$ABCDEFGHIJKLMNOPQRSTUOKlySru39VvENm.dVpzLdZEClj4puKeC"
                         });
                 });
 

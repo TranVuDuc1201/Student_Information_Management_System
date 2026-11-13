@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <!-- Center 3D Isometric / Vector Graphic Showcase -->
+        <!-- Center 3D Isometric Showcase -->
         <div class="my-auto py-5 text-center position-relative z-1">
             <div class="isometric-illustration-container mx-auto position-relative">
                 <!-- Center Isometric Mock Visual (Pure CSS & SVG Vector) -->
@@ -58,7 +58,7 @@
                     <div class="progress rounded-pill mb-2" style="height: 6px;">
                         <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: 85%;"></div>
                     </div>
-                    <small class="text-muted text-start d-block" style="font-size: 0.75rem;">Next Milestones: APDP301 Final Report</small>
+                    <small class="text-muted text-start d-block" style="font-size: 0.75rem;">Continuous Academic Performance Tracking</small>
                 </div>
 
                 <!-- Floating 3D Badges -->
@@ -93,12 +93,12 @@
         </div>
     </div>
 
-    <!-- Right Column: Login Card & Role Switcher -->
+    <!-- Right Column: Login Card & Domain Switcher -->
     <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center p-4 p-md-5 bg-surface">
-        <div class="w-100" style="max-width: 460px;">
+        <div class="w-100" style="max-width: 480px;">
             <div class="text-start mb-4">
                 <h2 class="fw-bold font-heading mb-1">Welcome back</h2>
-                <p class="text-muted">Select your portal access and sign in to continue.</p>
+                <p class="text-muted">Select your portal domain and sign in to continue.</p>
             </div>
 
             @if (TempData["SuccessMessage"] != null)
@@ -144,7 +144,7 @@
                         <span class="input-group-text bg-white border-end-0 rounded-start-4 text-muted ps-3">
                             <i class="bi bi-person"></i>
                         </span>
-                        <input asp-for="Username" class="form-control form-control-modern border-start-0 ps-2" placeholder="e.g. ductvbh02383 or adminduc000@gmail.com" required />
+                        <input asp-for="Username" class="form-control form-control-modern border-start-0 ps-2" placeholder="e.g. student@university.edu or admin" required />
                     </div>
                     <span asp-validation-for="Username" class="text-danger small"></span>
                 </div>
@@ -191,11 +191,6 @@
                     </p>
                 </div>
             </form>
-
-            <div class="mt-4 p-3 rounded-4 bg-light text-center small text-muted border">
-                <i class="bi bi-info-circle me-1 text-primary"></i>
-                <strong>Quick Hint:</strong> Academic login will automatically direct you to Student or Faculty based on your record. Default seeded admin is <code>adminduc000@gmail.com</code> / <code>duc123</code>.
-            </div>
         </div>
     </div>
 </div>

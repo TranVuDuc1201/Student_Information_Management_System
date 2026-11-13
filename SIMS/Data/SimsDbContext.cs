@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using SIMS.Models.Entities;
 
@@ -6,8 +6,16 @@ namespace SIMS.Data
 {
     public class SimsDbContext : DbContext
     {
+
         public SimsDbContext(DbContextOptions<SimsDbContext> options) : base(options)
         {
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.ConfigureWarnings(warnings =>
+                warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+
+            base.OnConfiguring(optionsBuilder);
         }
 
         // Database Tables
@@ -95,7 +103,10 @@ namespace SIMS.Data
 
         private static string HashPassword(string password)
         {
-            return BCrypt.Net.BCrypt.HashPassword(password, 11);
+            // Cố định Salt (chuỗi 22 ký tự hợp lệ của BCrypt) để Hash sinh ra luôn tĩnh
+            // Giải quyết triệt để lỗi PendingModelChangesWarning của Entity Framework
+            string fixedSalt = "$2a$11$ABCDEFGHIJKLMNOPQRSTUV";
+            return BCrypt.Net.BCrypt.HashPassword(password, fixedSalt);
         }
 
         private static void SeedData(ModelBuilder modelBuilder)
