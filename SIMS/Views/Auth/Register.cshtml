@@ -1,0 +1,210 @@
+@model SIMS.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Student Registration - SIMS";
+    ViewData["HideNav"] = true;
+    ViewData["HideFooter"] = true;
+    ViewData["FluidLayout"] = true;
+}
+
+<div class="container-fluid min-vh-100 p-0 d-flex flex-column flex-lg-row">
+    <!-- Left Hero: Aesthetic 3D Vector & Information Area -->
+    <div class="col-12 col-lg-5 d-flex flex-column justify-content-between p-4 p-md-5 auth-hero-section position-relative overflow-hidden">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+
+        <!-- Top Brand Header -->
+        <div class="d-flex align-items-center gap-3 z-1">
+            <div class="brand-icon shadow-lg">
+                <i class="bi bi-mortarboard-fill text-white fs-4"></i>
+            </div>
+            <div>
+                <h3 class="fw-bolder m-0 tracking-tight text-white">SIMS</h3>
+                <span class="badge bg-white bg-opacity-25 text-white border border-white border-opacity-25 rounded-pill px-3 py-1 small">
+                    Student Portal Intake
+                </span>
+            </div>
+        </div>
+
+        <!-- Center Information Block -->
+        <div class="my-auto py-5 text-white z-1">
+            <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-2 text-uppercase mb-3 fw-semibold">
+                Self-Service Onboarding
+            </span>
+            <h2 class="display-6 fw-extrabold text-white mb-3">Begin Your Academic Journey</h2>
+            <p class="text-white text-opacity-80 fs-6" style="max-width: 420px;">
+                Create your verified student profile to access interactive course registration, live grade calculation, and comprehensive academic analytics.
+            </p>
+
+            <div class="mt-4 d-flex flex-column gap-3" style="max-width: 380px;">
+                <div class="d-flex align-items-center gap-3 p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <i class="bi bi-person-badge fs-3 text-white"></i>
+                    <div>
+                        <div class="fw-bold small">Official Student Record</div>
+                        <div class="text-white text-opacity-70 small">Linked directly to your university student ID</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 p-3 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <i class="bi bi-shield-lock-fill fs-3 text-white"></i>
+                    <div>
+                        <div class="fw-bold small">Encrypted Security</div>
+                        <div class="text-white text-opacity-70 small">Passwords hashed using high-work-factor BCrypt</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="z-1 text-white text-opacity-70 small">
+            <span>&copy; 2026 Student Information Management System &bull; .NET 10.0</span>
+        </div>
+    </div>
+
+    <!-- Right Column: Registration Form -->
+    <div class="col-12 col-lg-7 d-flex align-items-center justify-content-center p-4 p-md-5 bg-surface">
+        <div class="w-100" style="max-width: 540px;">
+            <div class="text-start mb-4">
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-sm btn-light rounded-pill mb-3 text-muted">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Sign In
+                </a>
+                <h2 class="fw-bold font-heading mb-1">Create Student Account</h2>
+                <p class="text-muted">Fill in your institutional credentials to enroll in SIMS.</p>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded-4 mb-4 p-3 shadow-sm" role="alert"></div>
+
+            <form asp-controller="Auth" asp-action="Register" method="post" class="needs-validation">
+                @Html.AntiForgeryToken()
+
+                <div class="row g-3 mb-3">
+                    <!-- Student Code -->
+                    <div class="col-12 col-sm-6">
+                        <label asp-for="StudentCode" class="form-label small fw-semibold text-secondary">Student ID / Code</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 rounded-start-4 text-muted ps-3">
+                                <i class="bi bi-card-text"></i>
+                            </span>
+                            <input asp-for="StudentCode" class="form-control form-control-modern border-start-0 ps-2" placeholder="e.g. BH02383" required />
+                        </div>
+                        <span asp-validation-for="StudentCode" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="col-12 col-sm-6">
+                        <label asp-for="FullName" class="form-label small fw-semibold text-secondary">Full Legal Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 rounded-start-4 text-muted ps-3">
+                                <i class="bi bi-person"></i>
+                            </span>
+                            <input asp-for="FullName" class="form-control form-control-modern border-start-0 ps-2" placeholder="e.g. Tran Vu Duc" required />
+                        </div>
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Email Address -->
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label small fw-semibold text-secondary">Institutional Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 rounded-start-4 text-muted ps-3">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input asp-for="Email" type="email" class="form-control form-control-modern border-start-0 ps-2" placeholder="student@fpt.edu.vn" required />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <!-- Degree Program Selection -->
+                <div class="mb-3">
+                    <label asp-for="Program" class="form-label small fw-semibold text-secondary">Degree Program</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 rounded-start-4 text-muted ps-3">
+                            <i class="bi bi-book"></i>
+                        </span>
+                        <select asp-for="Program" class="form-select form-control-modern border-start-0 ps-2">
+                            <option value="Software Engineering">Software Engineering</option>
+                            <option value="Artificial Intelligence">Artificial Intelligence</option>
+                            <option value="Cybersecurity">Cybersecurity</option>
+                            <option value="Information Systems">Information Systems</option>
+                            <option value="Data Science">Data Science</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Program" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <!-- Password -->
+                    <div class="col-12 col-sm-6">
+                        <label asp-for="Password" class="form-label small fw-semibold text-secondary">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 rounded-start-4 text-muted ps-3">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input asp-for="Password" type="password" class="form-control form-control-modern border-start-0 ps-2" placeholder="Min. 6 chars" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="col-12 col-sm-6">
+                        <label asp-for="ConfirmPassword" class="form-label small fw-semibold text-secondary">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 rounded-start-4 text-muted ps-3">
+                                <i class="bi bi-shield-check"></i>
+                            </span>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control form-control-modern border-start-0 ps-2" placeholder="Repeat password" required />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary-gradient w-100 py-3 rounded-4 fw-bold fs-6 d-flex align-items-center justify-content-center gap-2">
+                    <span>Complete Student Registration</span>
+                    <i class="bi bi-check2-circle fs-5"></i>
+                </button>
+            </form>
+
+            <div class="mt-4 text-center">
+                <p class="text-muted small mb-0">
+                    Already registered? 
+                    <a asp-controller="Auth" asp-action="Login" class="text-primary fw-semibold text-decoration-none">
+                        Sign in to your account
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-hero-section {
+        background: linear-gradient(145deg, #1e1b4b 0%, #312e81 45%, #4338ca 100%);
+        min-height: 400px;
+    }
+
+    .hero-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .hero-orb-1 {
+        width: 360px;
+        height: 360px;
+        background: #06b6d4;
+        top: -60px;
+        left: -60px;
+    }
+
+    .hero-orb-2 {
+        width: 300px;
+        height: 300px;
+        background: #ec4899;
+        bottom: -40px;
+        right: -40px;
+    }
+</style>
+

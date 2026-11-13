@@ -1,0 +1,356 @@
+@model SIMS.Models.ViewModels.StudentDashboardViewModel
+@{
+    ViewData["Title"] = "Student Portal - Dashboard";
+    ViewData["FluidLayout"] = true;
+    ViewData["HideNav"] = true; // Use portal custom sidebar & topbar
+}
+
+<div class="d-flex min-vh-100">
+    <!-- Collapsible Sidebar -->
+    <aside class="portal-sidebar d-none d-lg-flex flex-column p-3 position-sticky top-0" style="width: 280px; height: 100vh;">
+        <!-- Brand -->
+        <div class="d-flex align-items-center gap-3 px-2 mb-4 pb-3 border-bottom">
+            <div class="brand-icon">
+                <i class="bi bi-mortarboard-fill text-white fs-5"></i>
+            </div>
+            <div>
+                <span class="fs-5 fw-bold gradient-text">SIMS</span>
+                <span class="d-block small text-muted text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.05em;">Student Portal</span>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="nav flex-column gap-1 flex-grow-1">
+            <a href="#" class="sidebar-nav-item active">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <span>My Courses</span>
+                <span class="badge rounded-pill bg-primary ms-auto small">@Model.EnrolledCourses.Count</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-trophy-fill"></i>
+                <span>Grades & Transcript</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-calendar3"></i>
+                <span>Class Schedule</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-clipboard2-check-fill"></i>
+                <span>Attendance Log</span>
+            </a>
+            <div class="border-top my-3"></div>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-gear-fill"></i>
+                <span>Account Settings</span>
+            </a>
+            <a href="#" class="sidebar-nav-item text-muted">
+                <i class="bi bi-question-circle-fill"></i>
+                <span>Help & Advising</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar User Card & Logout -->
+        <div class="glass-card p-3 d-flex align-items-center gap-3 mt-auto">
+            <img src="@Model.AvatarUrl" alt="Avatar" class="rounded-circle border" style="width: 44px; height: 44px; object-fit: cover;">
+            <div class="overflow-hidden">
+                <div class="fw-bold small text-truncate">@Model.FullName</div>
+                <div class="text-muted small" style="font-size: 0.75rem;">ID: @Model.StudentCode</div>
+            </div>
+            <a asp-controller="Auth" asp-action="Logout" class="btn btn-sm btn-light ms-auto text-danger" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow-1 d-flex flex-column bg-surface min-vh-100 overflow-hidden">
+        <!-- Top Navbar -->
+        <header class="navbar glass-nav px-4 py-3 sticky-top border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-light d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+                <div class="input-group d-none d-md-flex" style="width: 320px;">
+                    <span class="input-group-text bg-light border-0 rounded-start-pill ps-3 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control bg-light border-0 rounded-end-pill" placeholder="Search courses, professors, exams...">
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-light rounded-circle position-relative p-2" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell-fill text-secondary"></i>
+                        @if (Model.Notifications.Any(n => n.IsUnread))
+                        {
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                        }
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 p-2" style="width: 320px;">
+                        <li class="p-2 border-bottom fw-bold text-muted small">Notifications</li>
+                        @foreach (var note in Model.Notifications)
+                        {
+                            <li class="p-2 rounded-3 hover-bg">
+                                <div class="fw-semibold small">@note.Title</div>
+                                <div class="text-muted small text-truncate">@note.Message</div>
+                                <div class="text-primary mt-1" style="font-size: 0.7rem;">@note.TimeAgo</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Role Switcher Shortcut -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-arrow-repeat me-1"></i> Switch Role
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+                        <li><a class="dropdown-item active" asp-controller="Student" asp-action="Index">Student View</a></li>
+                        <li><a class="dropdown-item" asp-controller="Faculty" asp-action="Index">Faculty View</a></li>
+                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Admin View</a></li>
+                    </ul>
+                </div>
+
+                <!-- Avatar Profile -->
+                <div class="d-flex align-items-center gap-2">
+                    <img src="@Model.AvatarUrl" alt="Avatar" class="rounded-circle border" style="width: 40px; height: 40px; object-fit: cover;">
+                    <div class="d-none d-sm-block text-start">
+                        <span class="fw-bold small d-block leading-tight">@Model.FullName</span>
+                        <span class="text-muted small" style="font-size: 0.75rem;">@Model.MajorProgram</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Offcanvas Mobile Sidebar -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title gradient-text fw-bold">SIMS Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column">
+                <nav class="nav flex-column gap-2">
+                    <a href="#" class="sidebar-nav-item active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+                    <a href="#" class="sidebar-nav-item"><i class="bi bi-journal-bookmark-fill"></i> My Courses</a>
+                    <a href="#" class="sidebar-nav-item"><i class="bi bi-trophy-fill"></i> Grades & Transcript</a>
+                    <a href="#" class="sidebar-nav-item"><i class="bi bi-calendar3"></i> Class Schedule</a>
+                </nav>
+                <div class="mt-auto pt-3 border-top">
+                    <a asp-controller="Auth" asp-action="Logout" class="btn btn-outline-danger w-100 rounded-pill">Sign Out</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Body Container -->
+        <main class="p-3 p-lg-4 overflow-auto">
+            <!-- Hero Banner Section -->
+            <div class="glass-card p-4 p-md-5 mb-4 position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(236, 72, 153, 0.06) 100%);">
+                <div class="row align-items-center g-4 position-relative z-1">
+                    <div class="col-12 col-md-8">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white border shadow-sm mb-3">
+                            <span class="badge bg-success rounded-circle p-1"></span>
+                            <span class="small fw-semibold text-secondary">Academic Status: @Model.AcademicStanding</span>
+                        </div>
+                        <h1 class="fw-extrabold display-6 font-heading mb-2">
+                            Welcome back, <span class="gradient-text">@Model.FullName</span> 👋
+                        </h1>
+                        <p class="text-secondary lead fs-6 mb-4">
+                            You're currently enrolled in <strong>@Model.EnrolledCourses.Count active courses</strong> for @Model.AcademicYear. Keep up the high momentum!
+                        </p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="#coursesSection" class="btn btn-primary-gradient rounded-pill px-4 py-2 fw-semibold">
+                                <i class="bi bi-journal-check me-1"></i> View Course Progress
+                            </a>
+                            <button class="btn btn-light border rounded-pill px-4 py-2 fw-semibold text-secondary">
+                                <i class="bi bi-download me-1"></i> Academic Transcript (.PDF)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 text-center">
+                        <div class="p-3 rounded-4 bg-white bg-opacity-70 shadow-sm border d-inline-block">
+                            <div class="text-muted small text-uppercase fw-bold mb-1">Academic Credits</div>
+                            <div class="display-6 fw-bold text-primary">@Model.CompletedCredits <span class="fs-5 text-muted fw-normal">/ @Model.TotalRequiredCredits</span></div>
+                            <div class="progress rounded-pill mt-2" style="height: 8px; width: 180px;">
+                                <div class="progress-bar bg-gradient-primary" style="width: @((int)((double)Model.CompletedCredits / Model.TotalRequiredCredits * 100))%;"></div>
+                            </div>
+                            <small class="text-muted mt-1 d-block">@((int)((double)Model.CompletedCredits / Model.TotalRequiredCredits * 100))% towards graduation</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metrics & Doughnut Chart Section -->
+            <div class="row g-4 mb-4">
+                <!-- Large GPA Doughnut Chart Card -->
+                <div class="col-12 col-lg-5">
+                    <div class="glass-card p-4 h-100 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="fw-bold m-0 font-heading">Cumulative GPA Standing</h5>
+                                <small class="text-muted">Grading Scale 4.0 Standard</small>
+                            </div>
+                            <span class="badge badge-soft-primary px-3 py-2 rounded-pill">Top 5% Tier</span>
+                        </div>
+
+                        <!-- Doughnut Chart Canvas with Center Absolute Overlay -->
+                        <div class="position-relative my-auto py-3" style="min-height: 230px;">
+                            <canvas id="gpaDoughnutChart" style="max-height: 230px;"></canvas>
+                            <div class="position-absolute top-50 start-50 translate-middle text-center pointer-events-none">
+                                <span class="display-5 fw-extrabold text-primary d-block">@Model.CumulativeGpa.ToString("0.00")</span>
+                                <span class="badge bg-light text-muted border px-2 py-1 small">out of 4.00</span>
+                            </div>
+                        </div>
+
+                        <div class="row text-center pt-3 border-top g-2 mt-auto">
+                            @foreach (var sem in Model.SemesterGpaHistory)
+                            {
+                                <div class="col-3">
+                                    <span class="text-muted small d-block" style="font-size: 0.75rem;">@sem.Semester</span>
+                                    <span class="fw-bold text-dark">@sem.Gpa.ToString("0.00")</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications & Upcoming Deadlines -->
+                <div class="col-12 col-lg-7">
+                    <div class="glass-card p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="fw-bold m-0 font-heading">Announcements & Deadlines</h5>
+                                <small class="text-muted">Direct updates from your course instructors</small>
+                            </div>
+                            <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill small">
+                                @Model.Notifications.Count(n => n.IsUnread) Action Required
+                            </span>
+                        </div>
+
+                        <div class="d-flex flex-column gap-3">
+                            @foreach (var item in Model.Notifications)
+                            {
+                                <div class="p-3 rounded-4 border @(item.IsUnread ? "bg-white shadow-sm" : "bg-light bg-opacity-50") d-flex align-items-start gap-3">
+                                    <div class="rounded-circle p-2 mt-1 @(item.Category == "Exam" ? "bg-danger-subtle text-danger" : item.Category == "Assignment" ? "bg-primary-subtle text-primary" : "bg-warning-subtle text-warning")">
+                                        <i class="bi @(item.Category == "Exam" ? "bi-alarm" : item.Category == "Assignment" ? "bi-pencil-square" : "bi-megaphone") fs-5"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="fw-bold mb-1 fs-6">@item.Title</h6>
+                                            <span class="badge bg-light text-muted border small">@item.TimeAgo</span>
+                                        </div>
+                                        <p class="text-secondary small mb-1">@item.Message</p>
+                                        <span class="badge @(item.Category == "Exam" ? "badge-soft-danger" : "badge-soft-primary") rounded-pill px-2 py-1" style="font-size: 0.7rem;">
+                                            @item.Category
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid Cards for 'My Courses' with Progress Bars -->
+            <div id="coursesSection" class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="fw-bold font-heading m-0">Enrolled Courses</h4>
+                        <small class="text-muted">Ongoing curriculum for current academic trimester</small>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                        <i class="bi bi-plus-circle me-1"></i> Enroll in New Course
+                    </button>
+                </div>
+
+                <div class="row g-4">
+                    @foreach (var course in Model.EnrolledCourses)
+                    {
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="glass-card glass-card-interactive p-4 h-100 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1 rounded-pill">
+                                        @course.CourseCode
+                                    </span>
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1 small fw-bold">
+                                        Grade: @course.CurrentGrade
+                                    </span>
+                                </div>
+
+                                <h6 class="fw-bold mb-2 font-heading">@course.CourseName</h6>
+                                
+                                <div class="text-muted small mb-3">
+                                    <i class="bi bi-person me-1"></i> @course.InstructorName
+                                </div>
+
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                                        <span class="text-muted">Syllabus Completion</span>
+                                        <span class="fw-bold text-dark">@course.ProgressPercentage%</span>
+                                    </div>
+                                    <div class="progress rounded-pill mb-3" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: @course.ProgressPercentage%;"></div>
+                                    </div>
+
+                                    <div class="p-2 rounded-3 bg-light d-flex justify-content-between align-items-center small text-muted">
+                                        <span><i class="bi bi-geo-alt me-1"></i> @course.Room</span>
+                                        <span><i class="bi bi-clock me-1"></i> @course.Credits Cr</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('gpaDoughnutChart').getContext('2d');
+            const cumulativeGpa = @Model.CumulativeGpa;
+            const remaining = (4.0 - cumulativeGpa).toFixed(2);
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Current Cumulative GPA', 'Target Gap'],
+                    datasets: [{
+                        data: [cumulativeGpa, remaining],
+                        backgroundColor: [
+                            '#4f46e5',
+                            '#e2e8f0'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '78%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
+

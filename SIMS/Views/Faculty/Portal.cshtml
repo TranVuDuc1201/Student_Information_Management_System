@@ -1,0 +1,346 @@
+@model SIMS.Models.ViewModels.FacultyGradingViewModel
+@{
+    ViewData["Title"] = "Faculty Portal - Grade Book";
+    ViewData["FluidLayout"] = true;
+    ViewData["HideNav"] = true;
+}
+
+<div class="d-flex min-vh-100">
+    <!-- Faculty Sidebar -->
+    <aside class="portal-sidebar d-none d-lg-flex flex-column p-3 position-sticky top-0" style="width: 280px; height: 100vh;">
+        <div class="d-flex align-items-center gap-3 px-2 mb-4 pb-3 border-bottom">
+            <div class="brand-icon" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);">
+                <i class="bi bi-person-video3 text-white fs-5"></i>
+            </div>
+            <div>
+                <span class="fs-5 fw-bold gradient-text">SIMS</span>
+                <span class="d-block small text-muted text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.05em;">Faculty Console</span>
+            </div>
+        </div>
+
+        <nav class="nav flex-column gap-1 flex-grow-1">
+            <a href="#" class="sidebar-nav-item active">
+                <i class="bi bi-table"></i>
+                <span>Grade Book & Evaluation</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-collection-play-fill"></i>
+                <span>My Assigned Courses</span>
+                <span class="badge rounded-pill bg-info ms-auto">@Model.AssignedCourses.Count</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-people-fill"></i>
+                <span>Student Rosters</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-file-earmark-bar-graph"></i>
+                <span>Assessment Reports</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-calendar-check"></i>
+                <span>Office Hours & Advising</span>
+            </a>
+            <div class="border-top my-3"></div>
+            <a href="#" class="sidebar-nav-item text-muted">
+                <i class="bi bi-gear-fill"></i>
+                <span>Grading Scheme Config</span>
+            </a>
+        </nav>
+
+        <div class="glass-card p-3 d-flex align-items-center gap-3 mt-auto">
+            <div class="brand-icon rounded-circle" style="width: 42px; height: 42px; background: #06b6d4;">
+                <i class="bi bi-mortarboard text-white"></i>
+            </div>
+            <div class="overflow-hidden">
+                <div class="fw-bold small text-truncate">@Model.FacultyName</div>
+                <div class="text-muted small" style="font-size: 0.75rem;">Faculty ID: PROF-2026</div>
+            </div>
+            <a asp-controller="Auth" asp-action="Logout" class="btn btn-sm btn-light ms-auto text-danger" title="Sign Out">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Faculty Workspace Content Area -->
+    <div class="flex-grow-1 d-flex flex-column bg-surface min-vh-100 overflow-hidden">
+        <!-- Top Toolbar -->
+        <header class="navbar glass-nav px-4 py-3 sticky-top border-bottom d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-light d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFacultyNav">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+                <div>
+                    <h5 class="fw-bold m-0 font-heading">Course Grade Entry & Evaluation</h5>
+                    <span class="small text-muted">@Model.Department &bull; @Model.Semester</span>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-arrow-repeat me-1"></i> Switch Role
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+                        <li><a class="dropdown-item" asp-controller="Student" asp-action="Index">Student View</a></li>
+                        <li><a class="dropdown-item active" asp-controller="Faculty" asp-action="Index">Faculty View</a></li>
+                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Admin View</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Body -->
+        <main class="p-3 p-lg-4 overflow-auto">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success border-0 rounded-4 d-flex align-items-center gap-2 p-3 mb-4 shadow-sm">
+                    <i class="bi bi-check-circle-fill fs-5"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                </div>
+            }
+
+            <!-- Header Controls & Strategy Toolbar Card -->
+            <div class="glass-card p-4 mb-4">
+                <div class="row g-3 align-items-center justify-content-between">
+                    <!-- Course Picker -->
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">Active Course</label>
+                        <select class="form-select form-control-modern fw-semibold" onchange="window.location.href='@Url.Action("Portal", "Faculty")?courseId=' + this.value">
+                            @foreach (var c in Model.AssignedCourses)
+                            {
+                                <option value="@c.CourseId" selected="@(c.CourseId == Model.SelectedCourseId)">
+                                    @c.CourseCode - @c.CourseName (@c.TotalEnrolled/@c.MaxCapacity)
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Grading Strategy Dropdown -->
+                    <div class="col-12 col-md-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">Grading Strategy</label>
+                        <select class="form-select form-control-modern" id="gradingStrategy">
+                            <option value="weighted" selected>Standard-Weighted (10% Att, 30% Mid, 20% Asgn, 40% Final)</option>
+                            <option value="linear">Absolute Scale (Sum of raw points / 100)</option>
+                            <option value="curved">Bell Curve Adjusted Distribution</option>
+                        </select>
+                    </div>
+
+                    <!-- Auto-calculate GPA Toggle & Quick Actions -->
+                    <div class="col-12 col-md-4 d-flex flex-column align-items-md-end justify-content-center">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="autoCalcGpaToggle" checked>
+                            <label class="form-check-label small fw-semibold text-secondary" for="autoCalcGpaToggle">
+                                Live Auto-calculate GPA
+                            </label>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-light border rounded-pill px-3" type="button" onclick="alert('Exporting grade sheet to CSV...')">
+                                <i class="bi bi-file-earmark-excel text-success me-1"></i> Export CSV
+                            </button>
+                            <button class="btn btn-sm btn-primary-gradient rounded-pill px-3" type="submit" form="gradeSheetForm">
+                                <i class="bi bi-cloud-arrow-up me-1"></i> Save & Notify
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats summary badges -->
+                <div class="row g-3 mt-3 pt-3 border-top">
+                    <div class="col-6 col-md-3">
+                        <div class="small text-muted">Total Enrolled</div>
+                        <div class="fw-bold fs-5 text-dark">@Model.StudentGrades.Count Students</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="small text-muted">Graded Entries</div>
+                        <div class="fw-bold fs-5 text-success">@Model.GradedCount / @Model.StudentGrades.Count</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="small text-muted">Pending Submissions</div>
+                        <div class="fw-bold fs-5 text-warning">@Model.PendingCount</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="small text-muted">Class Average</div>
+                        <div class="fw-bold fs-5 text-primary">87.75% (3.68 GPA)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spreadsheet Grade Entry Table -->
+            <form id="gradeSheetForm" asp-controller="Faculty" asp-action="SaveGrades" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="SelectedCourseId" />
+                <input type="hidden" asp-for="SelectedCourseCode" />
+                <input type="hidden" asp-for="SelectedCourseName" />
+
+                <div class="glass-card overflow-hidden">
+                    <div class="table-responsive">
+                        <table class="table table-modern align-middle mb-0" id="gradesTable">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 220px;">Student Information</th>
+                                    <th class="text-center" style="width: 130px;">Attendance (10%)</th>
+                                    <th class="text-center" style="width: 130px;">Midterm (30%)</th>
+                                    <th class="text-center" style="width: 130px;">Assignment (20%)</th>
+                                    <th class="text-center" style="width: 130px;">Final Exam (40%)</th>
+                                    <th class="text-center" style="width: 120px;">Total (100%)</th>
+                                    <th class="text-center" style="width: 100px;">Grade</th>
+                                    <th class="text-center" style="width: 120px;">Status</th>
+                                    <th style="min-width: 160px;">Faculty Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.StudentGrades.Count; i++)
+                                {
+                                    var item = Model.StudentGrades[i];
+                                    <tr class="grade-row" data-index="@i">
+                                        <input type="hidden" name="StudentGrades[@i].EnrollmentId" value="@item.EnrollmentId" />
+                                        <input type="hidden" name="StudentGrades[@i].StudentId" value="@item.StudentId" />
+                                        <input type="hidden" name="StudentGrades[@i].StudentCode" value="@item.StudentCode" />
+                                        <input type="hidden" name="StudentGrades[@i].StudentName" value="@item.StudentName" />
+
+                                        <!-- Student Info -->
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img src="@item.AvatarUrl" alt="@item.StudentName" class="rounded-circle border" style="width: 36px; height: 36px; object-fit: cover;">
+                                                <div>
+                                                    <span class="fw-bold d-block text-dark">@item.StudentName</span>
+                                                    <span class="badge bg-light text-muted border small">@item.StudentCode</span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Attendance 10% -->
+                                        <td>
+                                            <input type="number" step="0.5" min="0" max="10" 
+                                                   class="form-control text-center form-control-modern input-attendance" 
+                                                   name="StudentGrades[@i].AttendanceScore" 
+                                                   value="@item.AttendanceScore" placeholder="0 - 10" />
+                                        </td>
+
+                                        <!-- Midterm 30% -->
+                                        <td>
+                                            <input type="number" step="0.5" min="0" max="30" 
+                                                   class="form-control text-center form-control-modern input-midterm" 
+                                                   name="StudentGrades[@i].MidtermScore" 
+                                                   value="@item.MidtermScore" placeholder="0 - 30" />
+                                        </td>
+
+                                        <!-- Assignment 20% -->
+                                        <td>
+                                            <input type="number" step="0.5" min="0" max="20" 
+                                                   class="form-control text-center form-control-modern input-assignment" 
+                                                   name="StudentGrades[@i].AssignmentScore" 
+                                                   value="@item.AssignmentScore" placeholder="0 - 20" />
+                                        </td>
+
+                                        <!-- Final Exam 40% -->
+                                        <td>
+                                            <input type="number" step="0.5" min="0" max="40" 
+                                                   class="form-control text-center form-control-modern input-final" 
+                                                   name="StudentGrades[@i].FinalScore" 
+                                                   value="@item.FinalScore" placeholder="0 - 40" />
+                                        </td>
+
+                                        <!-- Total Calculated -->
+                                        <td class="text-center">
+                                            <span class="fw-extrabold fs-6 text-primary cell-total">
+                                                @(item.TotalCalculatedScore.HasValue ? item.TotalCalculatedScore.Value.ToString("0.0") : "--")
+                                            </span>
+                                            <input type="hidden" name="StudentGrades[@i].TotalCalculatedScore" class="input-hidden-total" value="@item.TotalCalculatedScore" />
+                                        </td>
+
+                                        <!-- Letter Grade -->
+                                        <td class="text-center">
+                                            <span class="badge cell-grade @(item.LetterGrade.StartsWith("A") ? "badge-soft-success" : item.LetterGrade.StartsWith("B") ? "badge-soft-primary" : "badge-soft-warning") px-3 py-2 rounded-pill fw-bold">
+                                                @item.LetterGrade
+                                            </span>
+                                            <input type="hidden" name="StudentGrades[@i].LetterGrade" class="input-hidden-grade" value="@item.LetterGrade" />
+                                        </td>
+
+                                        <!-- Status -->
+                                        <td class="text-center">
+                                            <span class="badge @(item.Status == "Submitted" ? "bg-success-subtle text-success" : "bg-warning-subtle text-warning") rounded-pill px-2 py-1 small">
+                                                <i class="bi @(item.Status == "Submitted" ? "bi-check2" : "bi-clock") me-1"></i>
+                                                @item.Status
+                                            </span>
+                                        </td>
+
+                                        <!-- Notes -->
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm form-control-modern" 
+                                                   name="StudentGrades[@i].Note" 
+                                                   value="@item.Note" placeholder="Feedback/memo..." />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Bottom Action Bar -->
+                    <div class="p-3 bg-light d-flex justify-content-between align-items-center border-top">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i> Changes calculate dynamically. Press <strong>Save & Notify</strong> to commit grades to student transcripts.
+                        </small>
+                        <button type="submit" class="btn btn-primary-gradient px-4 py-2 rounded-pill fw-bold">
+                            <i class="bi bi-check2-circle me-1"></i> Save & Notify Students
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const table = document.getElementById("gradesTable");
+            const autoCalcToggle = document.getElementById("autoCalcGpaToggle");
+
+            function calculateRow(row) {
+                if (!autoCalcToggle.checked) return;
+
+                const att = parseFloat(row.querySelector(".input-attendance")?.value) || 0;
+                const mid = parseFloat(row.querySelector(".input-midterm")?.value) || 0;
+                const asg = parseFloat(row.querySelector(".input-assignment")?.value) || 0;
+                const fin = parseFloat(row.querySelector(".input-final")?.value) || 0;
+
+                const total = att + mid + asg + fin;
+                
+                const totalCell = row.querySelector(".cell-total");
+                const hiddenTotal = row.querySelector(".input-hidden-total");
+                const gradeBadge = row.querySelector(".cell-grade");
+                const hiddenGrade = row.querySelector(".input-hidden-grade");
+
+                if (totalCell) totalCell.textContent = total.toFixed(1);
+                if (hiddenTotal) hiddenTotal.value = total.toFixed(1);
+
+                // Compute letter grade
+                let grade = "F";
+                let badgeClass = "badge-soft-danger";
+                if (total >= 90) { grade = "A+"; badgeClass = "badge-soft-success"; }
+                else if (total >= 85) { grade = "A"; badgeClass = "badge-soft-success"; }
+                else if (total >= 80) { grade = "A-"; badgeClass = "badge-soft-success"; }
+                else if (total >= 75) { grade = "B+"; badgeClass = "badge-soft-primary"; }
+                else if (total >= 70) { grade = "B"; badgeClass = "badge-soft-primary"; }
+                else if (total >= 65) { grade = "C+"; badgeClass = "badge-soft-warning"; }
+                else if (total >= 60) { grade = "C"; badgeClass = "badge-soft-warning"; }
+
+                if (gradeBadge) {
+                    gradeBadge.textContent = grade;
+                    gradeBadge.className = `badge cell-grade ${badgeClass} px-3 py-2 rounded-pill fw-bold`;
+                }
+                if (hiddenGrade) hiddenGrade.value = grade;
+            }
+
+            table.addEventListener("input", function (e) {
+                if (e.target.matches("input[type='number']")) {
+                    const row = e.target.closest("tr");
+                    if (row) calculateRow(row);
+                }
+            });
+        });
+    </script>
+}
+

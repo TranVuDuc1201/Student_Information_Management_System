@@ -1,0 +1,327 @@
+/* ===================================================================
+   SIMS - MODERN STUDENT INFORMATION MANAGEMENT SYSTEM DESIGN SYSTEM
+   Theme: Glassmorphism, Clean Minimalist, Energetic Gen-Z Aesthetics
+   =================================================================== */
+
+:root {
+    /* Brand & Accent Colors */
+    --sims-primary: #4f46e5;
+    --sims-primary-hover: #4338ca;
+    --sims-primary-subtle: #eef2ff;
+    --sims-accent-purple: #7c3aed;
+    --sims-accent-cyan: #06b6d4;
+    --sims-accent-pink: #ec4899;
+
+    /* Semantic Status */
+    --sims-success: #10b981;
+    --sims-success-subtle: #d1fae5;
+    --sims-warning: #f59e0b;
+    --sims-warning-subtle: #fef3c7;
+    --sims-danger: #ef4444;
+    --sims-danger-subtle: #fee2e2;
+    --sims-info: #3b82f6;
+    --sims-info-subtle: #dbeafe;
+
+    /* Neutrals & Surfaces */
+    --sims-bg: #f8fafc;
+    --sims-surface: #ffffff;
+    --sims-surface-muted: #f1f5f9;
+    --sims-text-primary: #0f172a;
+    --sims-text-secondary: #475569;
+    --sims-text-muted: #94a3b8;
+    --sims-border: #e2e8f0;
+
+    /* Glassmorphism Variables */
+    --glass-bg: rgba(255, 255, 255, 0.78);
+    --glass-bg-darker: rgba(255, 255, 255, 0.90);
+    --glass-border: rgba(255, 255, 255, 0.85);
+    --glass-border-subtle: rgba(226, 232, 240, 0.7);
+    --glass-blur: blur(16px);
+    --glass-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+    --glass-shadow-lg: 0 20px 35px -5px rgba(79, 70, 229, 0.12), 0 10px 15px -3px rgba(15, 23, 42, 0.05);
+
+    /* Radii */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    /* Typography */
+    --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Base resets & typography */
+html {
+    font-size: 14px;
+    scroll-behavior: smooth;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 15px;
+    }
+}
+
+body.sims-body {
+    font-family: var(--font-body);
+    color: var(--sims-text-primary);
+    background-color: var(--sims-bg);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.06) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(124, 58, 237, 0.06) 0px, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--sims-text-primary);
+    letter-spacing: -0.02em;
+}
+
+/* Utilities & Gradients */
+.gradient-text {
+    background: linear-gradient(135deg, var(--sims-primary) 0%, var(--sims-accent-purple) 60%, var(--sims-accent-pink) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.gradient-btn, .btn-primary-gradient {
+    background: linear-gradient(135deg, var(--sims-primary) 0%, var(--sims-accent-purple) 100%);
+    color: #ffffff !important;
+    border: none;
+    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.35);
+    transition: all 0.25s ease;
+}
+
+.btn-primary-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.45);
+    background: linear-gradient(135deg, var(--sims-primary-hover) 0%, #6d28d9 100%);
+}
+
+.brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--sims-primary) 0%, var(--sims-accent-purple) 100%);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Glassmorphism Components */
+.glass-nav {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--glass-border-subtle) !important;
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+    box-shadow: var(--glass-shadow-lg);
+}
+
+.glass-card-interactive {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-interactive:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--glass-shadow-lg);
+}
+
+/* Nav Links */
+.nav-link-custom {
+    color: var(--sims-text-secondary);
+    font-weight: 500;
+    padding: 0.5rem 0.85rem;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.nav-link-custom:hover, .nav-link-custom.active {
+    color: var(--sims-primary);
+    background: rgba(79, 70, 229, 0.08);
+}
+
+/* Modern Segmented Control */
+.segmented-control {
+    display: flex;
+    background: var(--sims-surface-muted);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--sims-border);
+    position: relative;
+}
+
+.segmented-control .btn-check + .btn {
+    border: none;
+    border-radius: calc(var(--radius-md) - 2px);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--sims-text-secondary);
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.segmented-control .btn-check:checked + .btn {
+    background: #ffffff;
+    color: var(--sims-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Modern Input Controls */
+.form-control-modern {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--sims-border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: var(--sims-text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control-modern:focus {
+    background: #ffffff;
+    border-color: var(--sims-primary);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+    outline: none;
+}
+
+/* Stat Cards & Badges */
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.badge-soft-primary {
+    background-color: var(--sims-primary-subtle);
+    color: var(--sims-primary);
+    font-weight: 600;
+}
+
+.badge-soft-success {
+    background-color: var(--sims-success-subtle);
+    color: var(--sims-success);
+    font-weight: 600;
+}
+
+.badge-soft-warning {
+    background-color: var(--sims-warning-subtle);
+    color: #b45309;
+    font-weight: 600;
+}
+
+.badge-soft-danger {
+    background-color: var(--sims-danger-subtle);
+    color: var(--sims-danger);
+    font-weight: 600;
+}
+
+/* Modern Table */
+.table-modern {
+    --bs-table-bg: transparent;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-modern thead th {
+    background: rgba(241, 245, 249, 0.6);
+    color: var(--sims-text-secondary);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--sims-border);
+}
+
+.table-modern tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--sims-border);
+    color: var(--sims-text-primary);
+}
+
+.table-modern tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-modern tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table-modern tbody tr:hover {
+    background-color: rgba(79, 70, 229, 0.03);
+}
+
+/* Sidebar for Student / Faculty / Admin Portals */
+.portal-sidebar {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-right: 1px solid var(--glass-border-subtle);
+    min-height: calc(100vh - 65px);
+    transition: width 0.3s ease;
+}
+
+.sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    color: var(--sims-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-nav-item:hover, .sidebar-nav-item.active {
+    color: var(--sims-primary);
+    background: var(--sims-primary-subtle);
+}
+
+.sidebar-nav-item i {
+    font-size: 1.25rem;
+}
+
+/* Footer */
+.footer-modern {
+    background: var(--glass-bg);
+    border-top: 1px solid var(--glass-border-subtle);
+    backdrop-filter: var(--glass-blur);
+}
